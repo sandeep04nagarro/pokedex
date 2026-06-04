@@ -69,3 +69,22 @@ export interface TypeOption {
   name: string;
   url: string;
 }
+
+export interface EvolutionDetail {
+  name: string;
+  id: number;
+  image: string;
+}
+
+export interface EvolutionChain {
+  id: number;
+  pokemon: EvolutionDetail[];
+}
+
+export interface PokemonWithStats {
+  id: number;
+  name: string;
+  image: string;
+  types: string[];
+  stats: Array<{ base_stat: number; stat: { name: string } }>;
+}

@@ -4,6 +4,7 @@ import { usePokemonDetail } from '../hooks/usePokemonDetail';
 import { usePokemon } from '../context/PokemonContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
+import { EvolutionChain } from '../components/EvolutionChain';
 
 const STAT_NAMES: Record<string, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', 'special-attack': 'Sp. Atk', 'special-defense': 'Sp. Def', speed: 'Speed' };
 
@@ -88,6 +89,7 @@ export function PokemonDetailPage() {
           </div>
         </div>
       </div>
+      <EvolutionChain pokemonNameOrId={nameOrId || ''} />
     </div>
   );
 }

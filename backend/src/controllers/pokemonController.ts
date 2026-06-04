@@ -66,3 +66,40 @@ export const getPokemonByType = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 };
+
+export const getEvolutionChain = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { nameOrId } = req.params;
+    if (!nameOrId) {
+      res.status(400).json({ success: false, error: 'Pokemon name or ID is required' });
+      return;
+    }
+    const result = await pokemonService.getEvolutionChain(nameOrId);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPokemonByIds = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const idsParam = req.query.ids as string;
+    if (!idsParam) {
+      res.status(400).json({ success: false, error: 'ids query parameter is required' });
+      return;
+    }
+    const ids = idsParam.split(',').map(Number).filter((n) => !isNaN(n) && n > 0);
+    if (ids.length === 0) {
+      res.status(400).json({ success: false, error: 'At least one valid Pokemon ID is required' });
+      return;
+    }
+    if (ids.length > 10) {
+      res.status(400).json({ success: false, error: 'Maximum 10 Pokemon can be compared at once' });
+      return;
+    }
+    const result = await pokemonService.getPokemonDetailsByIds(ids);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};

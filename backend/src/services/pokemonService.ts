@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { config } from '../config';
 import { cache } from '../utils/cache';
-import { PokemonDetail, PokemonListItem, TypeListItem, PaginatedResponse } from '../types';
+import { PokemonDetail, PokemonListItem, TypeListItem, PaginatedResponse, EvolutionChain, EvolutionDetail, PokemonWithStats } from '../types';
 
 class ExternalApiError extends Error {
   constructor(message: string) {
@@ -205,6 +205,114 @@ export class PokemonService {
       if (error instanceof ExternalApiError) throw error;
       throw new ExternalApiError('Failed to fetch Pokemon by type from PokeAPI');
     }
+  }
+
+  async getEvolutionChain(pokemonNameOrId: string): Promise<EvolutionChain> {
+    const cacheKey = `evolution-${pokemonNameOrId.toLowerCase()}`;
+    const cached = cache.get<EvolutionChain>(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const speciesResponse = await fetch(`${this.baseUrl}/pokemon/${pokemonNameOrId.toLowerCase()}`);
+      if (!speciesResponse.ok) throw new ExternalApiError(`Pokemon '${pokemonNameOrId}' not found`);
+      const speciesData = await speciesResponse.json() as { species: { url: string } };
+
+      const speciesDetailResponse = await fetch(speciesData.species.url);
+      if (!speciesDetailResponse.ok) throw new ExternalApiError('Failed to fetch species details');
+      const speciesDetail = await speciesDetailResponse.json() as { evolution_chain: { url: string } };
+
+      if (!speciesDetail.evolution_chain) {
+        const result: EvolutionChain = { id: 0, pokemon: [] };
+        cache.set(cacheKey, result);
+        return result;
+      }
+
+      const evoChainResponse = await fetch(speciesDetail.evolution_chain.url);
+      if (!evoChainResponse.ok) throw new ExternalApiError('Failed to fetch evolution chain');
+      const evoChainData = await evoChainResponse.json() as { id: number; chain: any };
+
+      const pokemon: EvolutionDetail[] = [];
+      const traverse = (node: any) => {
+        const match = node.species.url.match(/\/(\d+)\/?$/);
+        const id = match ? parseInt(match[1]) : 0;
+        pokemon.push({ name: node.species.name, id, image: '' });
+        if (node.evolves_to && node.evolves_to.length > 0) {
+          traverse(node.evolves_to[0]);
+        }
+      };
+      traverse(evoChainData.chain);
+
+      const details = await Promise.all(
+        pokemon.map(async (p) => {
+          if (p.id === 0) {
+            try {
+              const res = await fetch(`${this.baseUrl}/pokemon/${p.name}`);
+              if (res.ok) {
+                const data = await res.json() as PokemonDetail;
+                p.id = data.id;
+                p.image = data.sprites.other['official-artwork'].front_default || data.sprites.front_default || '';
+              }
+            } catch { /* skip */ }
+          } else {
+            const detailCacheKey = `pokemon-${p.id}`;
+            const cachedDetail = cache.get<PokemonDetail>(detailCacheKey);
+            if (cachedDetail) {
+              p.image = cachedDetail.sprites.other['official-artwork'].front_default || cachedDetail.sprites.front_default || '';
+            } else {
+              try {
+                const res = await fetch(`${this.baseUrl}/pokemon/${p.id}`);
+                if (res.ok) {
+                  const data = await res.json() as PokemonDetail;
+                  cache.set(detailCacheKey, data);
+                  p.image = data.sprites.other['official-artwork'].front_default || data.sprites.front_default || '';
+                }
+              } catch { /* skip */ }
+            }
+          }
+          return p;
+        })
+      );
+
+      const result: EvolutionChain = { id: evoChainData.id, pokemon: details };
+      cache.set(cacheKey, result);
+      return result;
+    } catch (error) {
+      if (error instanceof ExternalApiError) throw error;
+      throw new ExternalApiError('Failed to fetch evolution chain from PokeAPI');
+    }
+  }
+
+  async getPokemonDetailsByIds(ids: number[]): Promise<PokemonWithStats[]> {
+    const results = await Promise.all(
+      ids.map(async (id) => {
+        const cacheKey = `pokemon-${id}`;
+        const cached = cache.get<PokemonDetail>(cacheKey);
+        if (cached) {
+          return this.formatWithStats(cached);
+        }
+        try {
+          const response = await fetch(`${this.baseUrl}/pokemon/${id}`);
+          if (!response.ok) return null;
+          const data = await response.json() as PokemonDetail;
+          cache.set(cacheKey, data);
+          return this.formatWithStats(data);
+        } catch {
+          return null;
+        }
+      })
+    );
+    return results.filter((p): p is PokemonWithStats => p !== null);
+  }
+
+  private formatWithStats(detail: PokemonDetail): PokemonWithStats {
+    const imageUrl = detail.sprites.other['official-artwork'].front_default || detail.sprites.front_default;
+    return {
+      id: detail.id,
+      name: detail.name,
+      image: imageUrl || '',
+      types: detail.types.map((t) => t.type.name),
+      stats: detail.stats.map((s) => ({ base_stat: s.base_stat, stat: { name: s.stat.name } })),
+    };
   }
 
   private formatListItem(detail: PokemonDetail): PokemonListItem {

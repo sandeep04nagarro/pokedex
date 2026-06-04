@@ -3,6 +3,7 @@ import { usePokemonList } from '../hooks/usePokemonList';
 import { usePokemon } from '../context/PokemonContext';
 import { SearchBar } from '../components/SearchBar';
 import { TypeFilter } from '../components/TypeFilter';
+import { SortBar } from '../components/SortBar';
 import { PokemonGrid } from '../components/PokemonGrid';
 import { Pagination } from '../components/Pagination';
 import { RecentlyViewed } from '../components/RecentlyViewed';
@@ -12,7 +13,7 @@ import * as api from '../services/api';
 import { TypeOption } from '../types';
 
 export function HomePage() {
-  const { pokemon, loading, error, page, totalPages, setPage, searchQuery, setSearchQuery, selectedType, setSelectedType } = usePokemonList();
+  const { pokemon, loading, error, page, totalPages, setPage, searchQuery, setSearchQuery, selectedType, setSelectedType, sortBy, setSortBy } = usePokemonList();
   const { recentlyViewed } = usePokemon();
   const [types, setTypes] = useState<TypeOption[]>([]);
 
@@ -26,6 +27,7 @@ export function HomePage() {
       <div className="controls">
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
         <TypeFilter types={types} selected={selectedType} onChange={setSelectedType} />
+        <SortBar value={sortBy} onChange={setSortBy} />
       </div>
       {error && <ErrorMessage message={error} />}
       {loading ? (

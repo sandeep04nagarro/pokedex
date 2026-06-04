@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Pokemon } from '../types';
 import * as api from '../services/api';
+import { SortOption } from '../components/SortBar';
 
 interface UsePokemonListResult {
   pokemon: Pokemon[];
@@ -13,6 +14,23 @@ interface UsePokemonListResult {
   setSearchQuery: (query: string) => void;
   selectedType: string;
   setSelectedType: (type: string) => void;
+  sortBy: SortOption;
+  setSortBy: (sort: SortOption) => void;
+}
+
+function sortPokemon(pokemon: Pokemon[], sort: SortOption): Pokemon[] {
+  const sorted = [...pokemon];
+  switch (sort) {
+    case 'name-asc':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    case 'name-desc':
+      return sorted.sort((a, b) => b.name.localeCompare(a.name));
+    case 'id-desc':
+      return sorted.sort((a, b) => b.id - a.id);
+    case 'id-asc':
+    default:
+      return sorted.sort((a, b) => a.id - b.id);
+  }
 }
 
 export function usePokemonList(): UsePokemonListResult {
@@ -24,6 +42,7 @@ export function usePokemonList(): UsePokemonListResult {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('id-asc');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -65,8 +84,10 @@ export function usePokemonList(): UsePokemonListResult {
     fetchPokemon();
   }, [fetchPokemon]);
 
+  const sortedPokemon = useMemo(() => sortPokemon(pokemon, sortBy), [pokemon, sortBy]);
+
   return {
-    pokemon,
+    pokemon: sortedPokemon,
     loading,
     error,
     page,
@@ -76,5 +97,7 @@ export function usePokemonList(): UsePokemonListResult {
     setSearchQuery,
     selectedType,
     setSelectedType,
+    sortBy,
+    setSortBy,
   };
 }
