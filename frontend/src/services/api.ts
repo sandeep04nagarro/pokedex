@@ -1,4 +1,4 @@
-import { PaginatedResponse, Pokemon, PokemonDetail, TypeOption, Favorite } from '../types';
+import { PaginatedResponse, Pokemon, PokemonDetail, TypeOption, Favorite, EvolutionChain, PokemonWithStats } from '../types';
 
 const API_BASE = '/api';
 
@@ -55,4 +55,12 @@ export async function removeFavorite(id: number): Promise<void> {
   });
   const json = await response.json();
   if (!json.success) throw new Error(json.error || 'Failed to remove favorite');
+}
+
+export async function getEvolutionChain(pokemonNameOrId: string): Promise<EvolutionChain> {
+  return fetchJson<EvolutionChain>(`${API_BASE}/pokemon/${encodeURIComponent(pokemonNameOrId)}/evolution`);
+}
+
+export async function getPokemonByIds(ids: number[]): Promise<PokemonWithStats[]> {
+  return fetchJson<PokemonWithStats[]>(`${API_BASE}/pokemon/compare?ids=${ids.join(',')}`);
 }
