@@ -12,6 +12,17 @@
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+[data-theme="dark"] {
+  --primary: #ee1515;
+  --primary-dark: #ff3333;
+  --bg: #121212;
+  --card-bg: #1e1e1e;
+  --text: #e0e0e0;
+  --text-light: #aaa;
+  --border: #333;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg);
@@ -397,6 +408,54 @@ a { text-decoration: none; color: inherit; }
   padding-top: 1rem;
   border-top: 2px solid var(--border);
   font-weight: 700;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .error-message {
+  background: #2a1a1a;
+  border-color: #5a2a2a;
+  color: #ff8888;
+}
+[data-theme="dark"] .retry-button {
+  background: #cc4444;
+}
+[data-theme="dark"] .ability-badge {
+  background: #2a2a2a;
+}
+[data-theme="dark"] .ability-badge.hidden-ability {
+  background: #2a2240;
+}
+[data-theme="dark"] .stat-bar-container {
+  background: #2a2a2a;
+}
+[data-theme="dark"] .compare-bar-left,
+[data-theme="dark"] .compare-bar-right {
+  background: #2a2a2a;
+}
+[data-theme="dark"] .remove-favorite {
+  background: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .remove-favorite:hover {
+  background: rgba(255, 80, 80, 0.3);
 }
 
 @media (max-width: 768px) {
