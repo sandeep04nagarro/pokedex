@@ -240,6 +240,48 @@ a { text-decoration: none; color: inherit; }
 }
 .remove-favorite:hover { background: rgba(200,0,0,0.2); }
 
+.cry-player {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--card-bg);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+.cry-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.cry-button {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cry-button:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+}
+.cry-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.cry-button-secondary {
+  border-color: var(--text-light);
+  color: var(--text-light);
+}
+.cry-button-secondary:hover:not(:disabled) {
+  background: var(--text-light);
+  color: white;
+}
+
 .evolution-chain { grid-column: 1 / -1; }
 .evolution-loading { padding: 1rem; }
 .evolution-flow {
@@ -404,6 +446,7 @@ a { text-decoration: none; color: inherit; }
   .app-logo h1 { font-size: 1.2rem; }
   .app-main { padding: 1rem; }
   .controls { flex-direction: column; }
+  .cry-player { flex-wrap: wrap; }
   .search-bar { min-width: 100%; }
   .pokemon-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
   .detail-hero { flex-direction: column; text-align: center; }

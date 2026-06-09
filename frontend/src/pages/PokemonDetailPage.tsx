@@ -5,6 +5,7 @@ import { usePokemon } from '../context/PokemonContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { EvolutionChain } from '../components/EvolutionChain';
+import { CryPlayer } from '../components/CryPlayer';
 
 const STAT_NAMES: Record<string, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', 'special-attack': 'Sp. Atk', 'special-defense': 'Sp. Def', speed: 'Speed' };
 
@@ -89,6 +90,13 @@ export function PokemonDetailPage() {
           </div>
         </div>
       </div>
+      {pokemon.cries && (
+        <CryPlayer
+          latestUrl={pokemon.cries.latest}
+          legacyUrl={pokemon.cries.legacy}
+          pokemonName={pokemon.name}
+        />
+      )}
       <EvolutionChain pokemonNameOrId={nameOrId || ''} />
     </div>
   );
