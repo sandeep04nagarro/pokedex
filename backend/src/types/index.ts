@@ -6,12 +6,18 @@ export interface PokemonListItem {
   types: string[];
 }
 
+export interface PokemonCries {
+  latest: string;
+  legacy: string;
+}
+
 export interface PokemonDetail {
   id: number;
   name: string;
   height: number;
   weight: number;
   base_experience: number;
+  cries: PokemonCries;
   sprites: {
     front_default: string;
     other: {
