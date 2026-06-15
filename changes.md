@@ -4,27 +4,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 1. Dark Mode / Theme Toggle
-
-**Priority:** High
-
-**Description:** Add a dark/light theme toggle that allows users to switch between color schemes. This is a highly requested modern UI feature that improves accessibility and user experience, especially in low-light conditions.
-
-**Implementation:**
-- Frontend: Add theme context with localStorage persistence
-- Create CSS variables for both themes
-- Add toggle button in header/navbar
-- Respect system preference (prefers-color-scheme)
-
-**Files to modify/create:**
-- `frontend/src/context/ThemeContext.tsx` (new)
-- `frontend/src/index.css` (add dark theme variables)
-- `frontend/src/components/ThemeToggle.tsx` (new)
-- `frontend/src/App.tsx` (wrap with ThemeProvider)
-
----
-
-## 2. Pokemon Cries / Audio Playback
+## 1. Pokemon Cries / Audio Playback
 
 **Priority:** High
 
@@ -45,7 +25,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 3. Multi-Type Filtering
+## 2. Multi-Type Filtering
 
 **Priority:** High
 
@@ -66,7 +46,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 4. Pokémon Abilities Details
+## 3. Pokémon Abilities Details
 
 **Priority:** Medium
 
@@ -89,7 +69,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 5. Type Effectiveness / Weakness Chart
+## 4. Type Effectiveness / Weakness Chart
 
 **Priority:** Medium
 
@@ -110,7 +90,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 6. Pokémon Moves with Filtering
+## 5. Pokémon Moves with Filtering
 
 **Priority:** Medium
 
@@ -131,7 +111,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 7. Pokémon Forms & Variants
+## 6. Pokémon Forms & Variants
 
 **Priority:** Medium
 
@@ -153,7 +133,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 8. Advanced Sorting Options
+## 7. Advanced Sorting Options
 
 **Priority:** Medium
 
@@ -171,7 +151,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 9. Pokémon Sprite Gallery
+## 8. Pokémon Sprite Gallery
 
 **Priority:** Low
 
@@ -189,7 +169,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 10. Batch Favorites Management
+## 9. Batch Favorites Management
 
 **Priority:** Low
 
@@ -212,7 +192,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 11. Pokémon Locations & Habitats
+## 10. Pokémon Locations & Habitats
 
 **Priority:** Low
 
@@ -233,7 +213,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 12. Egg Groups & Breeding Info
+## 11. Egg Groups & Breeding Info
 
 **Priority:** Low
 
@@ -250,7 +230,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 13. Shareable URLs for Filters
+## 12. Shareable URLs for Filters
 
 **Priority:** Low
 
@@ -267,7 +247,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 14. Keyboard Navigation & Accessibility
+## 13. Keyboard Navigation & Accessibility
 
 **Priority:** Low
 
@@ -291,7 +271,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 15. Statistics Visualization
+## 14. Statistics Visualization
 
 **Priority:** Low
 
@@ -311,7 +291,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 16. Export/Share Favorites
+## 15. Export/Share Favorites
 
 **Priority:** Low
 
@@ -330,7 +310,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 17. Offline Mode with Service Worker
+## 16. Offline Mode with Service Worker
 
 **Priority:** Low
 
@@ -350,7 +330,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 18. Pokémon Types Coverage Calculator
+## 17. Pokémon Types Coverage Calculator
 
 **Priority:** Low
 
@@ -367,7 +347,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 19. Pagination with Infinite Scroll
+## 18. Pagination with Infinite Scroll
 
 **Priority:** Low
 
@@ -386,7 +366,7 @@ This document outlines potential features that can be added to the Pokedex appli
 
 ---
 
-## 20. Pokémon Evolution Simulation
+## 19. Pokémon Evolution Simulation
 
 **Priority:** Low
 
