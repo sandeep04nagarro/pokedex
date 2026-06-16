@@ -34,6 +34,11 @@ export async function getPokemonByType(type: string, page: number = 1, pageSize:
   return fetchJson<PaginatedResponse<Pokemon>>(`${API_BASE}/pokemon/type/${encodeURIComponent(type)}?page=${page}&pageSize=${pageSize}`);
 }
 
+export async function getPokemonByMultipleTypes(types: string[], page: number = 1, pageSize: number = 20): Promise<PaginatedResponse<Pokemon>> {
+  const typesParam = types.join(',');
+  return fetchJson<PaginatedResponse<Pokemon>>(`${API_BASE}/pokemon/types?types=${encodeURIComponent(typesParam)}&page=${page}&pageSize=${pageSize}`);
+}
+
 export async function getFavorites(): Promise<Favorite[]> {
   return fetchJson<Favorite[]>(`${API_BASE}/favorites`);
 }

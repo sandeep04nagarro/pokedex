@@ -12,8 +12,8 @@ interface UsePokemonListResult {
   setPage: (page: number) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  selectedType: string;
-  setSelectedType: (type: string) => void;
+  selectedTypes: string[];
+  setSelectedTypes: (types: string[]) => void;
   sortBy: SortOption;
   setSortBy: (sort: SortOption) => void;
 }
@@ -40,7 +40,7 @@ export function usePokemonList(): UsePokemonListResult {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('id-asc');
 
@@ -59,13 +59,15 @@ export function usePokemonList(): UsePokemonListResult {
       if (debouncedSearch) {
         const result = await api.searchPokemon(debouncedSearch, page);
         let filtered = result.data;
-        if (selectedType) {
-          filtered = filtered.filter((p) => p.types.includes(selectedType.toLowerCase()));
+        if (selectedTypes.length > 0) {
+          filtered = filtered.filter((p) =>
+            selectedTypes.some(type => p.types.includes(type.toLowerCase()))
+          );
         }
         setPokemon(filtered);
         setTotalPages(result.totalPages);
-      } else if (selectedType) {
-        const result = await api.getPokemonByType(selectedType, page);
+      } else if (selectedTypes.length > 0) {
+        const result = await api.getPokemonByMultipleTypes(selectedTypes, page);
         setPokemon(result.data);
         setTotalPages(result.totalPages);
       } else {
@@ -78,7 +80,7 @@ export function usePokemonList(): UsePokemonListResult {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, selectedType]);
+  }, [page, debouncedSearch, selectedTypes]);
 
   useEffect(() => {
     fetchPokemon();
@@ -95,8 +97,8 @@ export function usePokemonList(): UsePokemonListResult {
     setPage,
     searchQuery,
     setSearchQuery,
-    selectedType,
-    setSelectedType,
+    selectedTypes,
+    setSelectedTypes,
     sortBy,
     setSortBy,
   };

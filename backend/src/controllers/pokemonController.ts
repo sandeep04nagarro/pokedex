@@ -67,6 +67,27 @@ export const getPokemonByType = async (req: Request, res: Response, next: NextFu
   }
 };
 
+export const getPokemonByMultipleTypes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const typesParam = req.query.types as string;
+    if (!typesParam) {
+      res.status(400).json({ success: false, error: 'types query parameter is required' });
+      return;
+    }
+    const types = typesParam.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    if (types.length === 0) {
+      res.status(400).json({ success: false, error: 'At least one valid type is required' });
+      return;
+    }
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 20;
+    const result = await pokemonService.getPokemonByMultipleTypes(types, page, pageSize);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getEvolutionChain = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { nameOrId } = req.params;
