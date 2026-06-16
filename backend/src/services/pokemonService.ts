@@ -207,6 +207,70 @@ export class PokemonService {
     }
   }
 
+  async getPokemonByMultipleTypes(types: string[], page: number = 1, pageSize: number = config.pagination.defaultPageSize): Promise<PaginatedResponse<PokemonListItem>> {
+    if (!types || types.length === 0) {
+      throw new Error('At least one type is required');
+    }
+
+    const normalizedTypes = types.map(t => t.toLowerCase());
+    const cacheKey = `pokemon-multi-type-${normalizedTypes.sort().join(',')}-${page}-${pageSize}`;
+    const cached = cache.get<PaginatedResponse<PokemonListItem>>(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const allPokemonMap = new Map<string, PokemonDetail>();
+
+      for (const type of normalizedTypes) {
+        const response = await fetch(`${this.baseUrl}/type/${type}`);
+        if (!response.ok) {
+          continue;
+        }
+        const data = await response.json() as { pokemon: Array<{ pokemon: { name: string; url: string } }> };
+
+        for (const item of data.pokemon) {
+          const pokemonName = item.pokemon.name;
+          if (!allPokemonMap.has(pokemonName)) {
+            const detailCacheKey = `pokemon-${pokemonName}`;
+            const cachedDetail = cache.get<PokemonDetail>(detailCacheKey);
+            if (cachedDetail) {
+              allPokemonMap.set(pokemonName, cachedDetail);
+            } else {
+              try {
+                const detailResponse = await fetch(`${this.baseUrl}/pokemon/${pokemonName}`);
+                if (detailResponse.ok) {
+                  const detail = await detailResponse.json() as PokemonDetail;
+                  cache.set(detailCacheKey, detail);
+                  allPokemonMap.set(pokemonName, detail);
+                }
+              } catch {
+                // Skip individual Pokemon errors
+              }
+            }
+          }
+        }
+      }
+
+      const allPokemonDetails = Array.from(allPokemonMap.values());
+      const total = allPokemonDetails.length;
+      const start = (page - 1) * pageSize;
+      const paginated = allPokemonDetails.slice(start, start + pageSize);
+
+      const result: PaginatedResponse<PokemonListItem> = {
+        data: paginated.map(this.formatListItem),
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      };
+
+      cache.set(cacheKey, result);
+      return result;
+    } catch (error) {
+      if (error instanceof ExternalApiError) throw error;
+      throw new ExternalApiError('Failed to fetch Pokemon by multiple types from PokeAPI');
+    }
+  }
+
   async getEvolutionChain(pokemonNameOrId: string): Promise<EvolutionChain> {
     const cacheKey = `evolution-${pokemonNameOrId.toLowerCase()}`;
     const cached = cache.get<EvolutionChain>(cacheKey);

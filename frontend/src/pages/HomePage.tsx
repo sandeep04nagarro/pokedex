@@ -13,7 +13,7 @@ import * as api from '../services/api';
 import { TypeOption } from '../types';
 
 export function HomePage() {
-  const { pokemon, loading, error, page, totalPages, setPage, searchQuery, setSearchQuery, selectedType, setSelectedType, sortBy, setSortBy } = usePokemonList();
+  const { pokemon, loading, error, page, totalPages, setPage, searchQuery, setSearchQuery, selectedTypes, setSelectedTypes, sortBy, setSortBy } = usePokemonList();
   const { recentlyViewed } = usePokemon();
   const [types, setTypes] = useState<TypeOption[]>([]);
 
@@ -26,7 +26,7 @@ export function HomePage() {
       <RecentlyViewed pokemon={recentlyViewed} />
       <div className="controls">
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
-        <TypeFilter types={types} selected={selectedType} onChange={setSelectedType} />
+        <TypeFilter types={types} selected={selectedTypes} onChange={setSelectedTypes} />
         <SortBar value={sortBy} onChange={setSortBy} />
       </div>
       {error && <ErrorMessage message={error} />}

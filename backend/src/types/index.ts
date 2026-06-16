@@ -95,3 +95,28 @@ export interface PokemonWithStats {
   types: string[];
   stats: Array<{ base_stat: number; stat: { name: string } }>;
 }
+
+export interface AbilityDetail {
+  id: number;
+  name: string;
+  generation: { name: string; url: string };
+  names: Array<{ language: { name: string }; name: string }>;
+  effect_entries: Array<{
+    effect: string;
+    short_effect: string;
+    language: { name: string };
+  }>;
+  effect_changes: Array<{
+    version: { name: string; url: string };
+    effect_entries: Array<{
+      effect: string;
+      short_effect: string;
+      language: { name: string };
+    }>;
+  }>;
+  pokemon: Array<{
+    pokemon: { name: string; url: string };
+    is_hidden: boolean;
+    slot: number;
+  }>;
+}
